@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "HumiditySensor",
+      "request": "launch",
+      "mainClass": "iscot.client.HumiditySensor",
+      "args": ["localhost", "12345", "Kitchen"]
+    },
+    {
+      "type": "java",
+      "name": "Ventilator",
+      "request": "launch",
+      "mainClass": "iscot.client.Ventilator",
+      "args": ["localhost", "12345", "Kitchen"]
+    }
+  ]
+}
