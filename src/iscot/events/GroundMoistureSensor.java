@@ -1,9 +1,8 @@
-package iscot.client;
+package iscot.events;
 
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
-import iscot.events.GroundMoistureSensorEvent;
-import iscot.events.HumiditySensorEvent;
+
 
 import javax.swing.*;
 import java.awt.*;

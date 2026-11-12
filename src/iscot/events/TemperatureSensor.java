@@ -1,9 +1,7 @@
-package iscot.client;
+package iscot.events;
 
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
-import iscot.events.HumiditySensorEvent;
-import iscot.events.TemperatureSensorEvent;
 
 import javax.swing.*;
 import java.awt.*;
