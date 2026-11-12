@@ -22,8 +22,8 @@ public class TemperatureSensor {
 
         JPanel painel = new JPanel(new BorderLayout());
         painel.setLayout(new BorderLayout());
-        SensorControl sensorControl= new SensorControl( "☀", "Temperatura - "+area, "%",
-                0, 100, 1, 50,
+        SensorControl sensorControl= new SensorControl( "☀", "Temperatura - "+area, "ºC",
+                16, 30, 1, 22,
                 valor -> {
                     TemperatureSensorEvent evento = new TemperatureSensorEvent(area, valor);
                     System.out.println(evento);
