@@ -1,14 +1,13 @@
-package iscot.client;
+package iscot.events;
 
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
-import iscot.events.HumiditySensorEvent;
-import iscot.events.TemperatureSensorEvent;
+
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TemperatureSensor {
+public class LightSensor {
 
     public static void main(String[] args) {
         if(args.length != 3){
@@ -18,15 +17,16 @@ public class TemperatureSensor {
 
         Areas area = Areas.valueOf(args[2]);
 
-        JFrame janela = new JFrame("Temperatura em " + area);
+        JFrame janela = new JFrame("Luminosidade em " + area);
         janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel painel = new JPanel(new BorderLayout());
         painel.setLayout(new BorderLayout());
-        SensorControl sensorControl= new SensorControl( "☀", "Temperatura - "+area, "°C",
-                16, 30, 1, 22,
+
+        SensorControl sensorControl= new SensorControl( "☀", "Luminosidade - "+area, "%",
+                0, 100, 1, 50,
                 valor -> {
-                    TemperatureSensorEvent evento = new TemperatureSensorEvent(area, valor);
+                    LightSensorEvent evento = new LightSensorEvent(area, valor);
                     System.out.println(evento);
                 });
         painel.add(sensorControl,BorderLayout.CENTER);
@@ -35,6 +35,5 @@ public class TemperatureSensor {
         janela.setMinimumSize(janela.getSize());
         janela.pack();
         janela.setVisible(true);
-
     }
 }
