@@ -23,6 +23,7 @@ public class HumiditySensor {
 	public static void main(String[] args) throws NumberFormatException, InterruptedException {
 		if(args.length!=3) {
 			System.err.println("Invalid arguments!");
+			return;
 		}
 		else {
 			// TODO connect to the server

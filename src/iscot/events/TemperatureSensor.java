@@ -11,6 +11,7 @@ public class TemperatureSensor {
     public static void main(String[] args) {
         if(args.length != 3){
             System.err.println("Invalid arguments!");
+            return;
         }
 
         Areas area = Areas.valueOf(args[2]);
@@ -20,8 +21,8 @@ public class TemperatureSensor {
 
         JPanel painel = new JPanel(new BorderLayout());
         painel.setLayout(new BorderLayout());
-        SensorControl sensorControl= new SensorControl( "☀", "Temperatura - "+area, "%",
-                0, 100, 1, 50,
+        SensorControl sensorControl= new SensorControl( "☀", "Temperatura - "+area, "°C",
+                16, 30, 1, 22,
                 valor -> {
                     TemperatureSensorEvent evento = new TemperatureSensorEvent(area, valor);
                     System.out.println(evento);

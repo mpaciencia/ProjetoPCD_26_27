@@ -13,7 +13,7 @@ public class AreaTemperatureOrderEvent extends HighLevelOrderEvent{
             throw new IllegalArgumentException("O modo não pode ser nulo");
         }
         if(!Double.isFinite(temperatura) || temperatura < 16 || temperatura > 30){
-            throw new IllegalArgumentException("A temperatura deve estar entre 16 e 30 ºC");
+            throw new IllegalArgumentException("A temperatura deve estar entre 16 e 30 °C");
         }
         this.modo = modo;
         this.temperatura = temperatura;
