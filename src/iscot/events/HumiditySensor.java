@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
 import iscot.enums.Type;
+import iscot.events.HumiditySensorEvent;
 
 
 public class HumiditySensor {
