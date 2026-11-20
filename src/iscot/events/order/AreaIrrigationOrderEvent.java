@@ -1,13 +1,13 @@
-package iscot.events;
+package iscot.events.order;
 
 import iscot.enums.Areas;
 
 public class AreaIrrigationOrderEvent extends HighLevelOrderEvent{
     private final int zona;
     private final int duracao;
-    private final boolean ativa;
+    private final boolean active;
 
-    public AreaIrrigationOrderEvent(Areas area, int zona, int duracao, boolean ativa){
+    public AreaIrrigationOrderEvent(Areas area, int zona, int duracao, boolean active){
         super(area);
 
         if(zona < 1 || zona > 3){
@@ -19,7 +19,7 @@ public class AreaIrrigationOrderEvent extends HighLevelOrderEvent{
 
         this.zona = zona;
         this.duracao = duracao;
-        this.ativa = ativa;
+        this.active = active;
     }
 
     public int getZona() {
@@ -30,7 +30,7 @@ public class AreaIrrigationOrderEvent extends HighLevelOrderEvent{
         return duracao;
     }
 
-    public boolean isAtiva() {
-        return ativa;
+    public boolean isActive() {
+        return active;
     }
 }

@@ -1,4 +1,4 @@
-package iscot.events;
+package iscot.events.sensor;
 
 import iscot.enums.Areas;
 

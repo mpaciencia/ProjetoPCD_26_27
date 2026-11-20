@@ -1,8 +1,8 @@
-package iscot.events;
+package iscot.client;
 
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
-
+import iscot.events.sensor.LightSensorEvent;
 
 import javax.swing.*;
 import java.awt.*;

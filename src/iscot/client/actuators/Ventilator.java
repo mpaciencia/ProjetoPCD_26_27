@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import javax.swing.Timer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -16,8 +17,7 @@ import iscot.client.gui.LightIcon;
 import iscot.client.gui.VentilatorIcon;
 import iscot.enums.Areas;
 import iscot.enums.Type;
-
-import iscot.events.AreaVentilationOrderEvent;
+import iscot.events.order.AreaVentilationOrderEvent;
 
 public class Ventilator {
 
@@ -57,12 +57,24 @@ public class Ventilator {
 			janela.pack();
 			janela.setVisible(true);
 
-			AreaVentilationOrderEvent ordem = new AreaVentilationOrderEvent(area, true);
-			ventilator.setLigado(ordem.isLigado());
-
 			// TODO: receive and handle messages from server
-			
-			// TODO: for first phase: create an appropriate event hardcoded locally and change the GUI accordingly
+			//ordem de evento para a fase 3
+			final boolean[] ligado = {false};
+
+			ventilator.setLigado(ligado[0]);
+
+			Timer timer = new Timer(5000, e -> {
+				ligado[0] = !ligado[0];
+
+				AreaVentilationOrderEvent ordem = new AreaVentilationOrderEvent(area, ligado[0]);
+
+				ventilator.setLigado(ordem.isLigado());
+
+				System.out.println("Evento: ventilador "
+						+ (ordem.isLigado() ? "ligado" : "desligado")
+						+ " em " + area);
+			});
+			timer.start();
 		}
 	}
 }

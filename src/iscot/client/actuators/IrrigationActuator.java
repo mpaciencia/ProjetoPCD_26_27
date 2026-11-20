@@ -2,7 +2,7 @@ package iscot.client.actuators;
 
 import iscot.client.gui.IrrigationIcon;
 import iscot.enums.Areas;
-import iscot.events.AreaIrrigationOrderEvent;
+import iscot.events.order.AreaIrrigationOrderEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,11 +30,11 @@ public class IrrigationActuator {
 
             // Ordem de exemplo: regar a zona 1 durante 10 minutos.
             AreaIrrigationOrderEvent ordem =
-                    new AreaIrrigationOrderEvent(area, 1, 10, true);
+                    new AreaIrrigationOrderEvent(area, 1, 1, true);
 
             rega.setZona(ordem.getZona());
             rega.setDuracao(ordem.getDuracao());
-            rega.setAtiva(ordem.isAtiva());
+            rega.setAtiva(ordem.isActive());
 
             estado.setText("Zona " + ordem.getZona()
                     + " — rega ativa durante "

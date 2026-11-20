@@ -1,30 +1,37 @@
-package iscot.events;
+package iscot.client;
 
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
+import iscot.enums.Type;
+import iscot.events.RegistrationEvent;
+import iscot.events.sensor.GroundMoistureSensorEvent;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TemperatureSensor {
+public class GroundMoistureSensor {
 
     public static void main(String[] args) {
-        if(args.length != 3){
+        if(args.length != 3) {
             System.err.println("Invalid arguments!");
             return;
         }
 
         Areas area = Areas.valueOf(args[2]);
 
-        JFrame janela = new JFrame("Temperatura em " + area);
+        // Nesta fase o registo é apenas representado localmente.
+        RegistrationEvent registo = new RegistrationEvent(area, Type.SENSOR);
+        System.out.println(registo);
+
+        JFrame janela = new JFrame("Humidade do Solo em " + area);
         janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel painel = new JPanel(new BorderLayout());
         painel.setLayout(new BorderLayout());
-        SensorControl sensorControl= new SensorControl( "☀", "Temperatura - "+area, "°C",
-                16, 30, 1, 22,
+        SensorControl sensorControl= new SensorControl( "☀", "Humidade do Solo - "+area, "%",
+                0, 100, 1, 50,
                 valor -> {
-                    TemperatureSensorEvent evento = new TemperatureSensorEvent(area, valor);
+                    GroundMoistureSensorEvent evento = new GroundMoistureSensorEvent(area, valor);
                     System.out.println(evento);
                 });
         painel.add(sensorControl,BorderLayout.CENTER);
@@ -33,6 +40,5 @@ public class TemperatureSensor {
         janela.setMinimumSize(janela.getSize());
         janela.pack();
         janela.setVisible(true);
-
     }
 }

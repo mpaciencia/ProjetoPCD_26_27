@@ -1,4 +1,4 @@
-package iscot.events;
+package iscot.events.order;
 import iscot.enums.Areas;
 public class AreaLightingOrderEvent extends HighLevelOrderEvent{
     

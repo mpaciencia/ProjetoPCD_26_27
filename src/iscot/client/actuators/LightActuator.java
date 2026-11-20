@@ -2,7 +2,7 @@ package iscot.client.actuators;
 
 import iscot.client.gui.LightIcon;
 import iscot.enums.Areas;
-import iscot.events.AreaLightingOrderEvent;
+import iscot.events.order.AreaLightingOrderEvent;
 
 import javax.swing.*;
 import java.awt.*;
