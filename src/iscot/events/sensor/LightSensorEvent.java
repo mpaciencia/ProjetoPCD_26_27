@@ -9,6 +9,9 @@ public class LightSensorEvent extends SensorEvent {
 
     public LightSensorEvent(Areas area, double light) {
         super(area);
+        if (!Double.isFinite(light) || light < 0 || light > 100) {
+            throw new IllegalArgumentException("A luminosidade deve estar entre 0 e 100.");
+        }
         this.light = light;
     }
 

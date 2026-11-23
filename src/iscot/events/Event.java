@@ -25,7 +25,7 @@ public abstract class Event implements Serializable {
     }
     @Override
     public String toString() {
-        return getClass().getSimpleName() + type + ", area=" + area + "]";
+        return getClass().getSimpleName() + "[type=" + type + ", area=" + area + "]";
     }
     
 }
