@@ -4,6 +4,7 @@ import iscot.enums.Areas;
 
 public class HumiditySensorEvent extends SensorEvent{
 
+    private static final long serialVersionUID = 1L;
     private final double humidity;
 
     public HumiditySensorEvent(Areas area, double humidity){

@@ -4,6 +4,7 @@ import iscot.enums.AirConditioningMode;
 import iscot.enums.Areas;
 
 public class AreaTemperatureOrderEvent extends HighLevelOrderEvent{
+    private static final long serialVersionUID = 1L;
     private final AirConditioningMode modo;
     private final double temperatura;
 
@@ -25,5 +26,11 @@ public class AreaTemperatureOrderEvent extends HighLevelOrderEvent{
 
     public double getTemperatura() {
         return temperatura;
+    }
+
+    @Override
+    public String toString() {
+        return "AreaTemperatureOrderEvent{area = " + getArea() + ", modo = " + modo
+                + ", temperatura = " + temperatura + " °C}";
     }
 }

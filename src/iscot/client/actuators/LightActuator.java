@@ -6,11 +6,15 @@ import iscot.events.order.AreaLightingOrderEvent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class LightActuator {
 
     public static void main(String[] args) {
-        Areas area = args.length >= 1
+        Areas area = args.length >= 3
+                ? Areas.valueOf(args[2])
+                : args.length >= 1
                 ? Areas.valueOf(args[0])
                 : Areas.LivingRoom;
 
@@ -19,10 +23,17 @@ public class LightActuator {
 
             LightIcon lampada = new LightIcon();
             JLabel estado = new JLabel("Estado: desligada", SwingConstants.CENTER);
+            DefaultListModel<String> historico = new DefaultListModel<>();
+            JList<String> listaHistorico = new JList<>(historico);
+            JScrollPane historicoScroll = new JScrollPane(listaHistorico);
+            historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
 
             JPanel painel = new JPanel(new BorderLayout());
             painel.add(lampada, BorderLayout.CENTER);
-            painel.add(estado, BorderLayout.SOUTH);
+            JPanel painelEstado = new JPanel(new BorderLayout());
+            painelEstado.add(estado, BorderLayout.NORTH);
+            painelEstado.add(historicoScroll, BorderLayout.CENTER);
+            painel.add(painelEstado, BorderLayout.SOUTH);
 
             janela.setContentPane(painel);
             janela.pack();
@@ -37,6 +48,8 @@ public class LightActuator {
 
             estado.setText("Estado: ligada — intensidade "
                     + ordem.getIntensidade() + "%");
+            historico.addElement("Lâmpada ligada - "
+                    + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
             System.out.println(ordem);
 

@@ -3,6 +3,7 @@ package iscot.events.order;
 import iscot.enums.Areas;
 
 public class AreaIrrigationOrderEvent extends HighLevelOrderEvent{
+    private static final long serialVersionUID = 1L;
     private final int zona;
     private final int duracao;
     private final boolean active;
@@ -32,5 +33,11 @@ public class AreaIrrigationOrderEvent extends HighLevelOrderEvent{
 
     public boolean isActive() {
         return active;
+    }
+
+    @Override
+    public String toString() {
+        return "AreaIrrigationOrderEvent{area = " + getArea() + ", zona = " + zona
+                + ", duracao = " + duracao + " min, ativa = " + active + "}";
     }
 }

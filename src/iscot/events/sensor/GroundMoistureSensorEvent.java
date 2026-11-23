@@ -9,6 +9,9 @@ public class GroundMoistureSensorEvent extends SensorEvent {
 
     public GroundMoistureSensorEvent(Areas area, double groundMoisture) {
         super(area);
+        if (!Double.isFinite(groundMoisture) || groundMoisture < 0 || groundMoisture > 100) {
+            throw new IllegalArgumentException("A humidade do solo deve estar entre 0 e 100.");
+        }
         this.groundMoisture = groundMoisture;
     }
 

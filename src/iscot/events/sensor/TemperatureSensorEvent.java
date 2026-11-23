@@ -5,10 +5,13 @@ import iscot.enums.Areas;
 public class TemperatureSensorEvent extends SensorEvent {
 
     private static final long serialVersionUID = 1L;
-    private double temperature;
+    private final double temperature;
 
     public TemperatureSensorEvent(Areas area, double temperature) {
         super(area);
+        if (!Double.isFinite(temperature) || temperature < 16 || temperature > 30) {
+            throw new IllegalArgumentException("A temperatura deve estar entre 16 e 30 °C.");
+        }
         this.temperature = temperature;
     }
 

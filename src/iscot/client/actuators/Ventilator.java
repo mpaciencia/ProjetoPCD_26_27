@@ -8,10 +8,15 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import javax.swing.Timer;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
 
 import iscot.client.gui.LightIcon;
 import iscot.client.gui.VentilatorIcon;
@@ -32,14 +37,14 @@ public class Ventilator {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void main(String[] args) throws NumberFormatException, UnknownHostException, IOException, InterruptedException, ClassNotFoundException {
-		if(args.length!=3) {
-			System.err.println("Invalid arguments!");
-		}
-		else {
+		Areas area = args.length >= 3
+				? Areas.valueOf(args[2])
+				: args.length >= 1
+				? Areas.valueOf(args[0])
+				: Areas.LivingRoom;
 			// TODO connect to server
 			
 			// TODO register with the server
-			Areas area=Areas.valueOf(args[2]);
 			
 			JFrame janela = new JFrame("Ventilador em "+area);
 			janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -51,6 +56,11 @@ public class Ventilator {
 			painel.setLayout(new BorderLayout());
 			VentilatorIcon ventilator = new VentilatorIcon();
 			painel.add(ventilator,BorderLayout.CENTER);
+			DefaultListModel<String> historico = new DefaultListModel<>();
+			JList<String> listaHistorico = new JList<>(historico);
+			JScrollPane historicoScroll = new JScrollPane(listaHistorico);
+			historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
+			painel.add(historicoScroll, BorderLayout.SOUTH);
 			janela.setContentPane(painel);
 			janela.setLocation(600, 400);
 			janela.setMinimumSize(janela.getSize());
@@ -70,11 +80,10 @@ public class Ventilator {
 
 				ventilator.setLigado(ordem.isLigado());
 
-				System.out.println("Evento: ventilador "
-						+ (ordem.isLigado() ? "ligado" : "desligado")
-						+ " em " + area);
+				historico.addElement("Ventilador " + (ordem.isLigado() ? "ligado" : "desligado")
+						+ " - " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+				System.out.println(ordem);
 			});
 			timer.start();
-		}
 	}
 }

@@ -1,7 +1,7 @@
 package iscot.events.order;
 import iscot.enums.Areas;
 public class AreaLightingOrderEvent extends HighLevelOrderEvent{
-    
+    private static final long serialVersionUID = 1L;
     private final boolean ligada;
     private final int intensidade;
 
@@ -20,5 +20,11 @@ public class AreaLightingOrderEvent extends HighLevelOrderEvent{
 
     public int getIntensidade() {
         return intensidade;
+    }
+
+    @Override
+    public String toString() {
+        return "AreaLightingOrderEvent{area = " + getArea() + ", ligada = " + ligada
+                + ", intensidade = " + intensidade + "%}";
     }
 }
