@@ -12,23 +12,26 @@ import java.awt.*;
 public class GroundMoistureSensor {
 
     public static void main(String[] args) {
-        if(args.length != 3) {
-            System.err.println("Invalid arguments!");
+        ClientArgs config;
+
+        try {
+            config = ClientArgs.parseOrExit(args, Type.SENSOR);
+        } catch (IllegalArgumentException e) {
             return;
         }
 
-        Areas area = Areas.valueOf(args[2]);
+        Areas area = config.getArea();
+        // TODO connect to the server
 
-        // Nesta fase o registo é apenas representado localmente.
-        RegistrationEvent registo = new RegistrationEvent(area, Type.SENSOR);
-        System.out.println(registo);
+		// TODO register with the server
+
 
         JFrame janela = new JFrame("Humidade do Solo em " + area);
         janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel painel = new JPanel(new BorderLayout());
         painel.setLayout(new BorderLayout());
-        SensorControl sensorControl= new SensorControl( "☀", "Humidade do Solo - "+area, "%",
+        SensorControl sensorControl= new SensorControl( "🌱", "Humidade do Solo - "+area, "%",
                 0, 100, 1, 50,
                 valor -> {
                     GroundMoistureSensorEvent evento = new GroundMoistureSensorEvent(area, valor);

@@ -1,7 +1,9 @@
 package iscot.client.actuators;
 
+import iscot.client.ClientArgs;
 import iscot.client.gui.IrrigationIcon;
 import iscot.enums.Areas;
+import iscot.enums.Type;
 import iscot.events.order.AreaIrrigationOrderEvent;
 
 import javax.swing.*;
@@ -12,49 +14,56 @@ import java.time.format.DateTimeFormatter;
 public class IrrigationActuator {
 
     public static void main(String[] args) {
-        Areas area = args.length >= 3
-                ? Areas.valueOf(args[2])
-                : args.length >= 1
-                ? Areas.valueOf(args[0])
-                : Areas.Garden;
+        final ClientArgs config;
 
-            JFrame janela = new JFrame("Rega em " + area);
-            janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try {
+            config = ClientArgs.parseOrExit(args, Type.ACTUATOR);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
 
-            IrrigationIcon rega = new IrrigationIcon();
-            JLabel estado = new JLabel("", SwingConstants.CENTER);
-            DefaultListModel<String> historico = new DefaultListModel<>();
-            JList<String> listaHistorico = new JList<>(historico);
-            JScrollPane historicoScroll = new JScrollPane(listaHistorico);
-            historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
+        Areas area = config.getArea();
 
-            JPanel painel = new JPanel(new BorderLayout());
-            painel.add(rega, BorderLayout.CENTER);
-            JPanel painelEstado = new JPanel(new BorderLayout());
-            painelEstado.add(estado, BorderLayout.NORTH);
-            painelEstado.add(historicoScroll, BorderLayout.CENTER);
-            painel.add(painelEstado, BorderLayout.SOUTH);
+        JFrame janela = new JFrame("Rega em " + area);
+        janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            janela.setContentPane(painel);
-            janela.pack();
-            janela.setLocationRelativeTo(null);
+        IrrigationIcon rega = new IrrigationIcon();
+        JLabel estado = new JLabel("", SwingConstants.CENTER);
+        
+        DefaultListModel<String> historico = new DefaultListModel<>();
+        JList<String> listaHistorico = new JList<>(historico);
+        JScrollPane historicoScroll = new JScrollPane(listaHistorico);
+        historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
 
-            // Ordem de exemplo: regar a zona 1 durante 10 minutos.
-            AreaIrrigationOrderEvent ordem =
-                    new AreaIrrigationOrderEvent(area, 1, 1, true);
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.add(rega, BorderLayout.CENTER);
+        
+        JPanel painelEstado = new JPanel(new BorderLayout());
+        painelEstado.add(estado, BorderLayout.NORTH);
+        painelEstado.add(historicoScroll, BorderLayout.CENTER);
+        painel.add(painelEstado, BorderLayout.SOUTH);
 
-            rega.setZona(ordem.getZona());
-            rega.setDuracao(ordem.getDuracao());
-            rega.setAtiva(ordem.isActive());
+        janela.setContentPane(painel);
+        janela.pack();
+        janela.setLocationRelativeTo(null);
 
-            estado.setText("Zona " + ordem.getZona()
-                    + " — rega ativa durante "
-                    + ordem.getDuracao() + " min");
-            historico.addElement("Rega ativa na zona " + ordem.getZona()
-                    + " - " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        // Ordem de exemplo: regar a zona 1 durante 1 minuto.
+        AreaIrrigationOrderEvent ordem = new AreaIrrigationOrderEvent(area, 1, 1, true);
 
-            System.out.println(ordem);
+        rega.setZona(ordem.getZona());
+        rega.setDuracao(ordem.getDuracao());
+        rega.setAtiva(ordem.isActive());
 
-            janela.setVisible(true);
+        estado.setText("Zona " + ordem.getZona()
+                        + " — rega ativa durante "
+                        + ordem.getDuracao() + " min");
+        historico.addElement("Rega ativa na zona " + ordem.getZona()
+                        + " - " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+
+        System.out.println(ordem);
+
+        janela.setVisible(true);
+
+        // TODO: receive and handle messages from server
     }
 }

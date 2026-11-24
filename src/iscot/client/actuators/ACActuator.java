@@ -1,8 +1,10 @@
 package iscot.client.actuators;
 
+import iscot.client.ClientArgs;
 import iscot.client.gui.ACIcon;
 import iscot.enums.AirConditioningMode;
 import iscot.enums.Areas;
+import iscot.enums.Type;
 import iscot.events.order.AreaTemperatureOrderEvent;
 
 import javax.swing.*;
@@ -13,48 +15,55 @@ import java.time.format.DateTimeFormatter;
 public class ACActuator {
 
     public static void main(String[] args) {
-        Areas area = args.length >= 3
-                ? Areas.valueOf(args[2])
-                : args.length >= 1
-                ? Areas.valueOf(args[0])
-                : Areas.LivingRoom;
+        final ClientArgs config;
 
-            JFrame janela = new JFrame("Ar condicionado em " + area);
-            janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try {
+            config = ClientArgs.parseOrExit(args, Type.ACTUATOR);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
 
-            ACIcon arCondicionado = new ACIcon();
-            JLabel estado = new JLabel("", SwingConstants.CENTER);
-            DefaultListModel<String> historico = new DefaultListModel<>();
-            JList<String> listaHistorico = new JList<>(historico);
-            JScrollPane historicoScroll = new JScrollPane(listaHistorico);
-            historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
+        Areas area = config.getArea();
 
-            JPanel painel = new JPanel(new BorderLayout());
-            painel.add(arCondicionado, BorderLayout.CENTER);
-            JPanel painelEstado = new JPanel(new BorderLayout());
-            painelEstado.add(estado, BorderLayout.NORTH);
-            painelEstado.add(historicoScroll, BorderLayout.CENTER);
-            painel.add(painelEstado, BorderLayout.SOUTH);
+        JFrame janela = new JFrame("Ar condicionado em " + area);
+        janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            janela.setContentPane(painel);
-            janela.pack();
-            janela.setLocationRelativeTo(null);
+        ACIcon arCondicionado = new ACIcon();
+        JLabel estado = new JLabel("", SwingConstants.CENTER);
+        
+        DefaultListModel<String> historico = new DefaultListModel<>();
+        JList<String> listaHistorico = new JList<>(historico);
+        JScrollPane historicoScroll = new JScrollPane(listaHistorico);
+        historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
 
-            // Ordem de exemplo: arrefecer até 22 °C.
-            AreaTemperatureOrderEvent ordem =
-                    new AreaTemperatureOrderEvent(
-                            area, AirConditioningMode.Frio, 22);
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.add(arCondicionado, BorderLayout.CENTER);
+        
+        JPanel painelEstado = new JPanel(new BorderLayout());
+        painelEstado.add(estado, BorderLayout.NORTH);
+        painelEstado.add(historicoScroll, BorderLayout.CENTER);
+        painel.add(painelEstado, BorderLayout.SOUTH);
 
-            arCondicionado.setTemperatura(ordem.getTemperatura());
-            arCondicionado.setModo(ordem.getModo());
+        janela.setContentPane(painel);
+        janela.pack();
+        janela.setLocationRelativeTo(null);
 
-            estado.setText("Modo: " + ordem.getModo()
-                    + " — " + ordem.getTemperatura() + " °C");
-            historico.addElement("Ar condicionado em modo " + ordem.getModo()
-                    + " - " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        // Ordem de exemplo: arrefecer até 22 °C.
+        AreaTemperatureOrderEvent ordem = new AreaTemperatureOrderEvent(
+                        area, AirConditioningMode.Frio, 22);
 
-            System.out.println(ordem);
+        arCondicionado.setTemperatura(ordem.getTemperatura());
+        arCondicionado.setModo(ordem.getModo());
 
-            janela.setVisible(true);
+        estado.setText("Modo: " + ordem.getModo()
+                        + " — " + ordem.getTemperatura() + " °C");
+        historico.addElement("Ar condicionado em modo " + ordem.getModo()
+                        + " - " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+
+        System.out.println(ordem);
+
+        janela.setVisible(true);
+
+        // TODO: receive and handle messages from server
     }
 }
