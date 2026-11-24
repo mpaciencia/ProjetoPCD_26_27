@@ -1,7 +1,9 @@
 package iscot.client.actuators;
 
+import iscot.client.ClientArgs;
 import iscot.client.gui.LightIcon;
 import iscot.enums.Areas;
+import iscot.enums.Type;
 import iscot.events.order.AreaLightingOrderEvent;
 
 import javax.swing.*;
@@ -12,47 +14,54 @@ import java.time.format.DateTimeFormatter;
 public class LightActuator {
 
     public static void main(String[] args) {
-        Areas area = args.length >= 3
-                ? Areas.valueOf(args[2])
-                : args.length >= 1
-                ? Areas.valueOf(args[0])
-                : Areas.LivingRoom;
+        final ClientArgs config;
 
-            JFrame janela = new JFrame("Luz em " + area);
-            janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try {
+            config = ClientArgs.parseOrExit(args, Type.ACTUATOR);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
 
-            LightIcon lampada = new LightIcon();
-            JLabel estado = new JLabel("Estado: desligada", SwingConstants.CENTER);
-            DefaultListModel<String> historico = new DefaultListModel<>();
-            JList<String> listaHistorico = new JList<>(historico);
-            JScrollPane historicoScroll = new JScrollPane(listaHistorico);
-            historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
+        Areas area = config.getArea();
 
-            JPanel painel = new JPanel(new BorderLayout());
-            painel.add(lampada, BorderLayout.CENTER);
-            JPanel painelEstado = new JPanel(new BorderLayout());
-            painelEstado.add(estado, BorderLayout.NORTH);
-            painelEstado.add(historicoScroll, BorderLayout.CENTER);
-            painel.add(painelEstado, BorderLayout.SOUTH);
+        JFrame janela = new JFrame("Luz em " + area);
+        janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            janela.setContentPane(painel);
-            janela.pack();
-            janela.setLocationRelativeTo(null);
+        LightIcon lampada = new LightIcon();
+        JLabel estado = new JLabel("Estado: desligada", SwingConstants.CENTER);
+        
+        DefaultListModel<String> historico = new DefaultListModel<>();
+        JList<String> listaHistorico = new JList<>(historico);
+        JScrollPane historicoScroll = new JScrollPane(listaHistorico);
+        historicoScroll.setBorder(BorderFactory.createTitledBorder("Histórico"));
 
-            // Ordem de exemplo para a fase 3.
-            AreaLightingOrderEvent ordem =
-                    new AreaLightingOrderEvent(area, true, 80);
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.add(lampada, BorderLayout.CENTER);
+        
+        JPanel painelEstado = new JPanel(new BorderLayout());
+        painelEstado.add(estado, BorderLayout.NORTH);
+        painelEstado.add(historicoScroll, BorderLayout.CENTER);
+        painel.add(painelEstado, BorderLayout.SOUTH);
 
-            lampada.setIntensidade(ordem.getIntensidade());
-            lampada.setLigada(ordem.isLigada());
+        janela.setContentPane(painel);
+        janela.pack();
+        janela.setLocationRelativeTo(null);
 
-            estado.setText("Estado: ligada — intensidade "
-                    + ordem.getIntensidade() + "%");
-            historico.addElement("Lâmpada ligada - "
-                    + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        // Ordem de exemplo para a fase 3.
+        AreaLightingOrderEvent ordem = new AreaLightingOrderEvent(area, true, 80);
 
-            System.out.println(ordem);
+        lampada.setIntensidade(ordem.getIntensidade());
+        lampada.setLigada(ordem.isLigada());
 
-            janela.setVisible(true);
+        estado.setText("Estado: ligada — intensidade "
+                        + ordem.getIntensidade() + "%");
+        historico.addElement("Lâmpada ligada - "
+                        + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+
+        System.out.println(ordem);
+
+        janela.setVisible(true);
+
+        // TODO: receive and handle messages from server
     }
 }
