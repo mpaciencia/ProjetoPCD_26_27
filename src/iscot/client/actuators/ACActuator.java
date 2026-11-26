@@ -1,6 +1,7 @@
 package iscot.client.actuators;
 
 import iscot.client.ClientArgs;
+import iscot.client.ServerConnection;
 import iscot.client.gui.ACIcon;
 import iscot.enums.AirConditioningMode;
 import iscot.enums.Areas;
@@ -9,6 +10,9 @@ import iscot.events.order.AreaTemperatureOrderEvent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -25,8 +29,30 @@ public class ACActuator {
 
         Areas area = config.getArea();
 
+        final ServerConnection connection;
+
+        try {
+            connection = new ServerConnection(config);
+            System.out.println("AC registado com ID: " + connection.getDeviceId());
+        } catch (IOException e) {
+            System.err.println("Error ao ligar ou registar o servidor: " + e.getMessage());
+            System.exit(1);
+            return;
+        }
+
         JFrame janela = new JFrame("Ar condicionado em " + area);
         janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        janela.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    connection.close();
+                } catch (IOException ex) {
+                    System.err.println("Erro ao fechar a ligação: " + ex.getMessage());
+                }
+            }
+        });
 
         ACIcon arCondicionado = new ACIcon();
         JLabel estado = new JLabel("", SwingConstants.CENTER);

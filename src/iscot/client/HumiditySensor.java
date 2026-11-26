@@ -1,10 +1,11 @@
 package iscot.client;
 
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import iscot.client.gui.SensorControl;
 import iscot.enums.Areas;
@@ -34,13 +35,31 @@ public class HumiditySensor {
 
 		Areas area = config.getArea();
 		
-		// TODO connect to the server
+		final ServerConnection connection;
 
-		// TODO register with the server
+		try {
+			connection = new ServerConnection(config);
+			System.out.println("Sensor registado com ID: " + connection.getDeviceId());
+		} catch (IOException e) {
+			System.err.println("Erro ao ligar ou registar o sensor: " + e.getMessage());
+			System.exit(1);
+			return;
+		}
 			
 			
 		JFrame janela = new JFrame("Humidade em " + area);
 		janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		janela.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				try {
+                    connection.close();
+                } catch (IOException ex) {
+					System.err.println("Erro ao fechar ligação: " + ex.getMessage());
+				}
+			}
+		});
 
 		// Criar os componentes gráficos
 		JPanel painel = new JPanel();
@@ -49,7 +68,21 @@ public class HumiditySensor {
 				0, 100, 1, 50,
 				valor -> {
 					HumiditySensorEvent evento = new HumiditySensorEvent(area, valor);
-					System.out.println(evento);
+					try {
+                        connection.sendEvent(evento);
+						System.out.println("Evento enviado: " + evento);
+                    } catch (IOException ex) {
+						System.err.println("Erro ao enviar: " + ex.getMessage());
+
+						JOptionPane.showMessageDialog(janela, "A ligação ao servidor foi perdida", "erro de ligação", JOptionPane.ERROR_MESSAGE);
+
+						try {
+                            connection.close();
+                        } catch (IOException closeError) {
+							System.err.println("Erro ao fechar ligação: " +  closeError.getMessage());
+						}
+						janela.dispose();
+					}
 				});
 		painel.add(sensorControl, BorderLayout.CENTER);
 		janela.setContentPane(painel);
