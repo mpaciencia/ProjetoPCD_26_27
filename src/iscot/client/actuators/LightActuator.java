@@ -1,6 +1,7 @@
 package iscot.client.actuators;
 
 import iscot.client.ClientArgs;
+import iscot.client.ServerConnection;
 import iscot.client.gui.LightIcon;
 import iscot.enums.Areas;
 import iscot.enums.Type;
@@ -8,6 +9,9 @@ import iscot.events.order.AreaLightingOrderEvent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,8 +28,30 @@ public class LightActuator {
 
         Areas area = config.getArea();
 
+        final ServerConnection connection;
+
+        try {
+            connection = new ServerConnection(config);
+            System.out.println("Luz registado com ID: " + connection.getDeviceId());
+        } catch (IOException e) {
+            System.err.println("Error ao ligar ou registar o servidor: " + e.getMessage());
+            System.exit(1);
+            return;
+        }
+
         JFrame janela = new JFrame("Luz em " + area);
         janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        janela.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    connection.close();
+                } catch (IOException ex) {
+                    System.err.println("Erro ao fechar a ligação: " + ex.getMessage());
+                }
+            }
+        });
 
         LightIcon lampada = new LightIcon();
         JLabel estado = new JLabel("Estado: desligada", SwingConstants.CENTER);

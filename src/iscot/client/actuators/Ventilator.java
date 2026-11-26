@@ -2,6 +2,8 @@ package iscot.client.actuators;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 
 import iscot.client.ClientArgs;
+import iscot.client.ServerConnection;
 import iscot.client.gui.LightIcon;
 import iscot.client.gui.VentilatorIcon;
 import iscot.enums.Areas;
@@ -47,12 +50,30 @@ public class Ventilator {
         }
 
         Areas area = config.getArea();
-		// TODO connect to server
+		final ServerConnection connection;
 
-		// TODO register with the server
+		try {
+			connection = new ServerConnection(config);
+			System.out.println("Ventilador registado com ID: " + connection.getDeviceId());
+		} catch (IOException e) {
+			System.err.println("Error ao ligar ou registar o servidor: " + e.getMessage());
+			System.exit(1);
+			return;
+		}
 
 		JFrame janela = new JFrame("Ventilador em " + area);
 		janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		janela.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				try {
+					connection.close();
+				} catch (IOException ex) {
+					System.err.println("Erro ao fechar a ligação: " + ex.getMessage());
+				}
+			}
+		});
 
 		// Criar os componentes gráficos
 		JPanel painel = new JPanel();
